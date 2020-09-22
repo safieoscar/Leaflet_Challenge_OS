@@ -46,6 +46,12 @@ function displayMap(inputData) {
         }
         return color;
     }
+
+    var latlng = L.latLng([feature.geometry.coordinates[1],feature.geometry.coordinates[0]])
+        console.log(latlng);
+        return L.circleMarker(latlng, geojsonMarkerOptions);
+        }
+
     function getMagnitude(mag) {
         return mag*7;
     }
