@@ -21,14 +21,12 @@ var geoUrl = "https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_mont
 d3.json(geoUrl, function(data) {
     //Create magnitude color function
     function getColor(magnitude) {
-        return magnitude > 1000 ? '#800026' :
-            magnitude > 6  ? '#BD0026' :
-            magnitude > 5  ? '#E31A1C' :
-            magnitude > 4  ? '#FC4E2A' :
-            magnitude > 3   ? '#FD8D3C' :
-            magnitude > 2   ? '#FEB24C' :
-            magnitude > 1   ? '#FED976' :
-                              '#FFEDA0';
+        return magnitude > 5  ? '#E31A1C' :
+            magnitude > 4 ? '#FC4E2A' :
+            magnitude > 3 ? '#FD8D3C' :
+            magnitude > 2 ? '#FEB24C' :
+            magnitude > 1 ? '#FED976' :
+                        '#FFEDA0';
     };
     
     //Create map style function
@@ -68,7 +66,7 @@ d3.json(geoUrl, function(data) {
     var legend = L.control({ position: "bottomright" });
     legend.onAdd = function(myMap) {
         var div = L.DomUtil.create("div", "info legend");
-        var grades = [0, 1, 2, 3, 4, 5, 6];
+        var grades = [0, 1, 2, 3, 4, 5];
         var labels = [];
         
         for (var i = 0; i < grades.length; i++) {
