@@ -19,7 +19,7 @@ var geoUrl = "https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_mont
 
 //Using D3 to retreive the data
 d3.json(geoUrl, function(data) {
-    //Create magnitude color function
+    //Create color function
     function getColor(magnitude) {
         return magnitude > 5  ? '#E31A1C' :
             magnitude > 4 ? '#FC4E2A' :
@@ -42,33 +42,38 @@ d3.json(geoUrl, function(data) {
         }
     };
 
+    //Create function to show magnitude in each earthquake
     function onEachFeature (feature, layer) {
         layer.bindPopup("<h3>" + feature.properties.place + 
         "</h3><hr><p>" + new Date(feature.properties.time) +
         "</p><br><p>Magnitude: " + feature.properties.mag + "</p>")
     };
 
+    //Create function to get the locations of each earthquake
     function getCoordinates(feature, latlng) {
         return L.circleMarker(latlng);
             };
 
-    
+    //Create function to get each earthquake's magnitude
     function getMagnitude(magnitude) {
         return magnitude*4;
         };
-
+    
+    //Create and add earthquake layer to our map
     L.geoJson(data, {
         onEachFeature: onEachFeature,
         style: mapStyle,
         pointToLayer: getCoordinates
         }).addTo(myMap);
 
+    //Create and add legend to map
     var legend = L.control({ position: "bottomright" });
     legend.onAdd = function(myMap) {
         var div = L.DomUtil.create("div", "info legend");
         var grades = [0, 1, 2, 3, 4, 5];
         var labels = [];
         
+        //Loop through each magnitude to generate labels 
         for (var i = 0; i < grades.length; i++) {
             div.innerHTML +=
                 '<i style="background:' + getColor(grades[i] + 1) + '"></i> ' +
