@@ -20,27 +20,15 @@ var geoUrl = "https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_mont
 //Using D3 to retreive the data
 d3.json(geoUrl, function(data) {
     //Create magnitude color function
-    function magnitudeColor(magnitude) {
-        
-        if (magnitude > 5) {
-            color = "#B22222";
-        }
-        else if (magnitude > 4) {
-            color = "#DC143C";
-        }
-        else if (magnitude > 3) {
-            color = "#CD5C5C";
-        }
-        else if (magnitude > 2) {
-            color = "#F08080";
-        }
-        else if (magnitude > 1) {
-            color = "#FFB6C1";
-        }
-        else {
-            color = "#FFE4E1";
-        }
-        return color;
+    function getColor(magnitude) {
+        return magnitude > 1000 ? '#800026' :
+            magnitude > 6  ? '#BD0026' :
+            magnitude > 5  ? '#E31A1C' :
+            magnitude > 4  ? '#FC4E2A' :
+            magnitude > 3   ? '#FD8D3C' :
+            magnitude > 2   ? '#FEB24C' :
+            magnitude > 1   ? '#FED976' :
+                              '#FFEDA0';
     };
     
     //Create map style function
@@ -49,7 +37,7 @@ d3.json(geoUrl, function(data) {
             opacity: 1,
             fillOpacity: 1,
             color: "#000000",
-            fillColor: magnitudeColor(feature.properties.mag),
+            fillColor: getColor(feature.properties.mag),
             radius: getMagnitude(feature.properties.mag),
             stroke: true,
             weight: 0.5
@@ -78,17 +66,18 @@ d3.json(geoUrl, function(data) {
         }).addTo(myMap);
 
     var legend = L.control({ position: "bottomright" });
-    legend.onAdd = function() {
+    legend.onAdd = function(myMap) {
         var div = L.DomUtil.create("div", "info legend");
-        var colors = ["#FFE4E1", "#FFB6C1", "#F08080", "#CD5C5C", "#DC143C", "#B22222"];
-        var grades = [0, 1, 2, 3, 4, 5];
-
-            for (var i = 0; i < grades.length; i++) {
-                div.innerHTML += "<i style='background: " + colors[i] + "'></i> " +
-                grades[i] + (grades[i + 1] ? "&ndash;" + grades[i + 1] + "<br>" : "+");
-            }
-            return div;
-        };
+        var grades = [0, 1, 2, 3, 4, 5, 6];
+        var labels = [];
+        
+        for (var i = 0; i < grades.length; i++) {
+            div.innerHTML +=
+                '<i style="background:' + getColor(grades[i] + 1) + '"></i> ' +
+                grades[i] + (grades[i + 1] ? '&ndash;' + grades[i + 1] + '<br>' : '+');
+        }
+        return div;
+    };
     
     legend.addTo(myMap);
     
